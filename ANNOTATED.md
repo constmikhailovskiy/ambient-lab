@@ -141,14 +141,29 @@ can race ahead of the SynthDef transmission. This is the line whose absence prod
 ### Line 50 — orbits to buses
 
 ```supercollider
-~dirt.start(57120, [0, 2, 4, 6, 0, 0]);
+~dirt.start(57120, 0 ! 6);
 ```
 
 Two arguments: the OSC port to listen on, and an array of *output bus offsets*, one per orbit.
 
-The array length defines how many orbits exist — six here. The values are starting bus indices, and
-because each orbit is 2 channels wide, orbit 0 occupies buses 0–1, orbit 1 occupies 2–3, and so on.
-Orbits 4 and 5 both point at bus 0, sharing the main output.
+The array length defines how many orbits exist — six either way. The values are starting bus
+indices, and because each orbit is 2 channels wide, an offset of 2 means buses 2–3.
+
+**The line above is the temporary form.** `0 ! 6` is sclang for `[0, 0, 0, 0, 0, 0]` — all six
+orbits folded onto the main output pair. That's deliberate: until BlackHole is installed, buses
+2–7 are declared but connect to nothing, so any orbit routed there is silent (the Tier 0 problem
+described under Line 18). Folding everything to 0/1 keeps the rig audible on plain built-in output.
+
+The target — the mapping the four armed Ableton tracks expect, and the one written in the comment
+block directly above this line — is:
+
+```supercollider
+~dirt.start(57120, [0, 2, 4, 6, 0, 0]);
+```
+
+Orbit 0 to buses 0–1, orbit 1 to 2–3, orbit 2 to 4–5, orbit 3 to 6–7; orbits 4 and 5 both point at
+bus 0, sharing the main output. Switch to this once BlackHole exists — the stem separation is the
+entire reason for eight output channels.
 
 `# orbit 6` in Tidal addresses nothing and is silent. If you want more, lengthen the array.
 

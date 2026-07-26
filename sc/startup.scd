@@ -42,6 +42,11 @@ s.waitForBoot {
 	s.sync;
 
 	// ---- orbits -> output buses --------------------------------
+	// TARGET MAP — contract with the Ableton set. Needs BlackHole (MACOS-SETUP.md step 1):
+	//   orbit 0 -> bus 0/1  catch-all      orbit 1 -> bus 2/3  pads & drones
+	//   orbit 2 -> bus 4/5  noise & washes orbit 3 -> bus 6/7  glass & arps
+	//   orbits 4,5 -> bus 0/1 spare   =>   ~dirt.start(57120, [0, 2, 4, 6, 0, 0]);
+	// TODO: restore the map above. Until BlackHole exists, buses 2-7 go nowhere:
 	~dirt.start(57120, 0 ! 6);
 
 	// nicer default reverb tails for ambient work
