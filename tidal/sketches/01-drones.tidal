@@ -11,7 +11,8 @@ ambient
 -- ---- 1. one note, held ------------------------------------
 -- sustain is in SECONDS. The event fires once per cycle, so `slow 8`
 -- means: retrigger once every 8 cycles (~53s), holding for 20s.
-d1 $ (slow 8 $ hold 20 $ pad $ note "c2") # orbit 0
+d1 $ slow 8 $ hold 20 $ pad $ note "c2"
+
 
 -- ---- 2. add motion to the same note -----------------------
 -- Nothing about the pitch changes. Only the timbre moves.

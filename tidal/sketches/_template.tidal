@@ -1,0 +1,98 @@
+-- ============================================================
+-- _template.tidal — copy this to start a new piece
+--
+--   cp tidal/sketches/_template.tidal tidal/sketches/2026-07-26-cold-fifths.tidal
+--
+-- Two scaffolding decisions are baked in, and they're the whole point:
+--
+--  1. FIXED CHANNEL ROLES. d1 is always the bed, d2 always harmony, and so on.
+--     Same in every piece, so your hands learn one layout and transfer it.
+--
+--  2. ROOT AND MODE DECLARED ONCE. Every layer derives pitch from these two
+--     bindings. Change `root` and the whole piece transposes together. This is
+--     what makes a set cohere instead of sounding like four unrelated patches.
+-- ============================================================
+
+
+-- ---- 1. header — evaluate these first, one line at a time ----
+
+ambient
+
+let root = "c3" :: Pattern Note
+
+let mode = "aeolian" :: Pattern String
+
+-- If either line throws a type error, drop the annotation and use numbers:
+--   let root = 48        -- MIDI note; c3 = 48
+-- and replace `+ root` below with `|+ note root`.
+
+-- Modes that suit this music: aeolian dorian phrygian lydian
+--                             minPent majPent whole ritusen egyptian
+
+
+-- ---- 2. layers — role per channel, always the same ----------
+
+-- d1  BED         continuous, never retriggers. Lowest, slowest, quietest.
+d1 $ slow 12 $ hold 45 $ drone (note root) # gain 0.85
+
+-- d2  HARMONY     the chord movement. This is the piece's skeleton.
+d2 $ slow 8 $ haze $ open 29 $ widen 37 $ hold 26 $ pad
+   $ note (scale mode "<0 -3 -5 2>" + root)
+
+-- d3  MELODIC     sparse, above the harmony. Holes are the point.
+d3 $ slow 3 $ thin 0.6 $ hold 10 $ cathedral $ glass
+   $ note (scale mode (segment 4 $ irand 12) + root |+ note 12)
+   # pF "decay" (range 3 8 (slow 31 perlin))
+
+-- d4  AIR         noise as harmony. Sits under everything, barely noticed.
+d4 $ slow 10 $ hold 30 $ wash (note root)
+   # pF "bw" (range 0.05 0.7 (slow 43 sine))
+   # gain 0.7
+
+-- d5  ACCENT      keep empty until the piece needs an event. Restraint.
+-- d5 silence
+
+-- d6  MIDI OUT    MicroFreak / Ableton. Same harmony, different body.
+-- d6 $ slow 8 $ note (scale mode "<0 -3 -5 2>" + root)
+--    # s "freak" # midichan 0 # sustain 20
+
+
+-- ---- 3. moves — variations to fire during performance -------
+-- Write these while composing so you're not inventing under pressure.
+-- Each should be one evaluation away.
+
+-- open up
+-- d2 $ slow 6 $ haze $ open 17 $ hold 20 $ pad $ note (scale mode "<0 -3>" + root)
+
+-- thicken
+-- d2 $ slow 8 $ haze $ under $ over $ hold 26 $ pad $ note (scale mode "<0 -5>" + root)
+
+-- strip to the bed
+-- d2 silence
+-- d3 silence
+
+-- lift the whole piece a fourth
+-- let root = "f3" :: Pattern Note
+
+
+-- ---- 4. transitions ----------------------------------------
+-- Never `hush` mid-set — it cuts reverb tails and sounds like a mistake.
+
+-- fade a layer over 8 cycles
+-- xfadeIn 3 8 $ silence
+
+-- crossfade a layer into new material
+-- xfadeIn 2 8 $ slow 8 $ haze $ hold 26 $ pad $ note (scale mode "<-7 -5>" + root)
+
+-- retire the piece: pull layers in reverse order of entry, bed last
+-- d3 silence
+-- d4 silence
+-- d2 silence
+-- d1 silence
+
+
+-- ---- 5. notes on this piece --------------------------------
+-- key:
+-- what works:
+-- what to try:
+-- runtime:

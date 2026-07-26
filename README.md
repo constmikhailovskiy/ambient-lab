@@ -11,7 +11,22 @@ TidalCycles, wired into Ableton Live, with the MicroFreak in the loop.
   <img src="docs/architecture.svg" alt="Signal flows from Tidal to SuperCollider to audio out; SuperCollider boots first, Tidal second" width="680">
 </p>
 
-The single most useful thing to get straight before writing any code:
+Two things to read off that diagram:
+
+**Only `scsynth` makes sound.** Everything to its left is instructions in transit. `sclang` and
+`scsynth` are separate programs — sclang is the interpreter you type into, scsynth is a C++ audio
+engine that only knows "make a voice with these numbers." That split explains the most confusing
+failure mode in this stack: SynthDefs registered in sclang while a *different*, freshly booted
+scsynth has never been sent them. Symptom is `FAILURE IN SERVER /s_new SynthDef not found`, or
+plain silence.
+
+**Boot order runs opposite to signal flow.** Not a package dependency — a network conversation.
+SuperDirt has to be listening on port 57120 before Tidal starts talking, and Tidal fires OSC
+without ever checking that anyone caught it. Boot backwards and you get silence with no error
+anywhere. After that they're independent: restart GHCi freely, but restarting SuperCollider means
+re-evaluating the whole startup block, because a fresh scsynth has no SynthDefs.
+
+The full breakdown:
 
 | Layer | Role | You edit it as |
 |---|---|---|
@@ -214,6 +229,12 @@ sc/beds.scd           Ndef continuous drones — the bed layer
 tidal/prelude.hs      helper functions, appended into BootTidal.hs by bootstrap.sh
 tidal/BootTidal.hs    generated: stock boot file + prelude. Point your editor here.
 tidal/sketches/       01-drones, 02-noise, 03-chords — meant to be broken
+tidal/sketches/_template.tidal   copy this to start a new piece
+SYNTAX.md             sclang + Tidal reference, organised by mental model
+ANNOTATED.md          line-by-line walkthrough of every file here
+codehelp/             hover docs + completion for the helper vocabulary
+.vscode/settings.json workspace config: haskell association, boot paths, codehelp
+docs/architecture.svg the diagram above
 takes/                recorded stems + the source that produced them
 ```
 

@@ -1,0 +1,198 @@
+# ambient-lab helper documentation for the VSCode TidalCycles extension.
+#
+# Wired in via:
+#   "tidalcycles.codehelp.commands.extra": [".../codehelp/ambient-lab.yaml"]
+#
+# After editing, run the command palette entry "Tidal Codehelp Reload" — no
+# window restart needed. Errors surface as notification popups.
+#
+# Schema mirrors the extension's own commands.yaml:
+#   name: { cmd, help, params, returns, examples, links }
+#   othername: { alias: name }
+
+ambient:
+  cmd: ambient
+  help: |-
+    Set the clock to **0.15 cycles per second** — roughly one cycle every 6.7
+    seconds. Evaluate this once at the start of a session.
+
+    At this tempo a four-step mini-notation pattern changes chord every 1.7
+    seconds, and `slow 8` means one change per minute. Ambient generally lives
+    between `0.05` and `0.3` cps.
+  examples:
+    - 'ambient'
+    - 'setcps 0.08 -- slower still'
+
+glacial:
+  cmd: glacial
+  help: |-
+    Set the clock to **0.05 cps** — one cycle every 20 seconds. For pieces
+    where a single chord change is the entire event.
+  examples:
+    - 'glacial'
+
+pad:
+  cmd: pad cpattern
+  help: |-
+    Route a pattern to the **`ambPad`** synth on **orbit 1** (bus 2/3).
+
+    Detuned 7-voice saw stack under a wandering lowpass, plus a sub sine an
+    octave down. The workhorse chord and drone voice.
+
+    Custom params: `detune` (0–1), `cutoff` (Hz), `res` (0–1), `spread`
+    (0–1), `lfo` (Hz), `sub` (0–1), `atk`/`rel` (fractions of sustain),
+    `pos` (−1..1).
+  returns: A control pattern targeting ambPad
+  examples:
+    - 'd1 $ slow 8 $ hold 20 $ pad $ note "c2"'
+    - 'd1 $ slow 6 $ haze $ open 23 $ hold 24 $ pad $ note "<c2 as1 f2>"'
+    - 'd1 $ (slow 8 $ hold 20 $ pad $ note "c2") # orbit 0 -- override for Tier 0'
+
+drone:
+  cmd: drone cpattern
+  help: |-
+    Route to **`ambDroneFM`** on **orbit 1**. Two-operator FM with a slowly
+    drifting modulation index. Deep, breathing low drones.
+
+    Custom params: `ratio` (try 1.5, 2.01, 3.14 — inharmonic goes metallic
+    fast), `index` (1–8), `drift` (Hz), `tone` (lowpass Hz).
+  examples:
+    - 'd2 $ slow 12 $ hold 40 $ drone $ note "c1"'
+    - 'd2 $ slow 12 $ hold 40 $ drone $ note "c1" # pF "index" (range 1 6 (slow 29 sine))'
+
+wash:
+  cmd: wash cpattern
+  help: |-
+    Route to **`ambNoise`** on **orbit 2** (bus 4/5). Six narrow bandpass
+    filters on pink and brown noise, each wandering independently — noise as
+    harmony rather than noise as texture.
+
+    Custom params: `bw` (0.02 ≈ pitched, 0.9 ≈ weather — the most useful knob
+    in the set), `motion` (Hz), `spread`.
+  examples:
+    - 'd1 $ slow 8 $ hold 26 $ wash $ note "c3" # pF "bw" 0.05'
+    - 'd1 $ slow 8 $ hold 26 $ wash $ note "c3" # pF "bw" (range 0.02 0.9 (slow 43 sine))'
+
+glass:
+  cmd: glass cpattern
+  help: |-
+    Route to **`ambGlass`** on **orbit 3** (bus 6/7). A bank of resonators
+    struck once by a noise burst — bell, glass, prepared piano. The melodic
+    layer above the drone.
+
+    Custom params: `decay` (seconds), `blur` (exciter length, 0.001–0.5),
+    `spread`.
+  examples:
+    - 'd2 $ slow 2 $ arp "up" $ hold 6 $ glass $ note "c4''min9''5"'
+    - 'd2 $ slow 3 $ thin 0.5 $ hold 10 $ glass $ note (scale "aeolian" (segment 4 $ irand 12) + "c4")'
+
+hold:
+  cmd: hold seconds cpattern
+  help: |-
+    Set note length in **seconds** (`sustain`) with `legato 1`.
+
+    This is the drone knob. Note that `sustain` is *absolute time*, not cycles
+    — so it does not scale when you change tempo.
+
+    The key trick: make `hold` **longer than the retrigger interval** so voices
+    overlap and crossfade into each other. `slow 6` at 0.15 cps retriggers
+    every 40s, so `hold 50` gives you a continuous bed built from discrete
+    events.
+  params:
+    seconds: Length of each note in seconds. 4–40 is the useful range here.
+  examples:
+    - 'd1 $ slow 8 $ hold 20 $ pad $ note "c2"'
+    - 'd1 $ slow 6 $ hold 50 $ pad $ note "<c2 as1>" -- deliberate overlap'
+
+drift:
+  cmd: drift cycles cpattern
+  help: |-
+    Wander the stereo position (`pos`, −0.9 to 0.9) over `cycles` cycles using
+    a slow sine.
+
+    Note this is the custom `pos` param, not SuperDirt's `pan` — different
+    semantics, and `pan` will not work on these synths.
+  params:
+    cycles: Period of the movement, in cycles. Use a prime.
+  examples:
+    - 'd1 $ slow 8 $ drift 37 $ hold 20 $ pad $ note "c2"'
+
+swell:
+  cmd: swell cycles cpattern
+  help: Breathe the amplitude between 0.7 and 1.05 over `cycles` cycles.
+  params:
+    cycles: Period of the breathing, in cycles.
+  examples:
+    - 'd1 $ slow 8 $ swell 19 $ hold 20 $ pad $ note "c2"'
+
+open:
+  cmd: open cycles cpattern
+  help: |-
+    Sweep the filter `cutoff` between 250 Hz and 5 kHz over `cycles` cycles.
+    The cheapest way to make a static drone feel alive.
+  params:
+    cycles: Period of the sweep, in cycles.
+  examples:
+    - 'd1 $ slow 8 $ open 23 $ hold 20 $ pad $ note "c2"'
+
+widen:
+  cmd: widen cycles cpattern
+  help: |-
+    Grow and shrink `detune` between 0.05 and 0.6 over `cycles` cycles, driven
+    by `perlin` rather than a sine so the motion is irregular.
+  params:
+    cycles: Period, in cycles.
+  examples:
+    - 'd1 $ slow 8 $ widen 31 $ hold 20 $ pad $ note "c2"'
+
+haze:
+  cmd: haze cpattern
+  help: 'Large reverb send: `room 0.9`, `size 0.95`, `dry 0.2`.'
+  examples:
+    - 'd1 $ slow 8 $ haze $ hold 20 $ pad $ note "c2"'
+
+cathedral:
+  cmd: cathedral cpattern
+  help: |-
+    Enormous reverb — `room 1.0`, `size 0.99`, `dry 0.05` — and forces
+    **orbit 2**. Reverb is a per-orbit effect in SuperDirt, so this moves the
+    pattern's bus as a side effect. Deliberate, but worth knowing.
+  examples:
+    - 'd2 $ slow 4 $ thin 0.6 $ hold 8 $ cathedral $ wash $ note "c4?"'
+
+under:
+  cmd: under cpattern
+  help: |-
+    Superimpose a copy an octave down, half a cycle later, at `gain 0.8`.
+    Thickens a thin pad without adding notes to the harmony.
+  examples:
+    - 'd1 $ slow 6 $ under $ hold 24 $ pad $ note "<c2 as1>"'
+
+over:
+  cmd: over cpattern
+  help: |-
+    Superimpose a copy a twelfth up (+19 semitones), a quarter cycle later, at
+    `gain 0.65`. Adds air rather than weight.
+  examples:
+    - 'd1 $ slow 6 $ over $ hold 24 $ pad $ note "<c2 as1>"'
+
+shimmer:
+  cmd: shimmer cpattern
+  help: |-
+    Superimpose the same notes with `detune 0.5`, a third of a cycle later, at
+    `gain 0.7`. The classic pad-thickening move: same pitch, more beating.
+  examples:
+    - 'd1 $ slow 6 $ shimmer $ hold 24 $ pad $ note "c2''maj9''5"'
+
+thin:
+  cmd: thin amount cpattern
+  help: |-
+    `degradeBy` under a friendlier name. Drops events at random.
+
+    On an arpeggiated chord this is disproportionately effective: each pass
+    reveals a different subset of the voicing, so the harmony stays fixed while
+    the surface keeps changing.
+  params:
+    amount: Probability of dropping each event, 0 (keep all) to 1 (drop all).
+  examples:
+    - 'd2 $ slow 2 $ thin 0.5 $ arp "up" $ hold 8 $ glass $ note "c4''min11''7"'

@@ -1,0 +1,49 @@
+{
+  // --- syntax highlighting -------------------------------------------------
+  // Requires the extension: justusadam.language-haskell
+  // The Tidal extension ships no grammar of its own; it borrows Haskell's.
+  "files.associations": {
+    "*.tidal": "haskell"
+  },
+
+  // --- Tidal ---------------------------------------------------------------
+  "tidalcycles.bootTidalPath": "/Users/konstie/ambient-lab/tidal/BootTidal.hs",
+  "tidalcycles.ghciPath": "/Users/konstie/.ghcup/bin/ghci",
+  "tidalcycles.useBootFileInCurrentDirectory": false,
+
+  // hover docs + completion, at maximum detail
+  "tidalcycles.codehelp.hover.level": "FULL",
+  "tidalcycles.codehelp.completion.level": "FULL",
+
+  // your own helpers, merged into the built-in documentation
+  "tidalcycles.codehelp.commands.extra": [
+    "/Users/konstie/ambient-lab/codehelp/ambient-lab.yaml"
+  ],
+
+  // see GHCi errors instead of guessing why a pattern did nothing
+  "tidalcycles.showGhciOutput": true,
+  "tidalcycles.showOutputInConsoleChannel": true,
+  "tidalcycles.showEvalCount": true,
+  "tidalcycles.feedbackColor": "rgba(100,250,100,0.25)",
+
+  // --- editor ---------------------------------------------------------------
+  // completions drawn from words already in your open sketches — crude, but it
+  // covers every helper and sample name you've actually used
+  "editor.wordBasedSuggestions": "allDocuments",
+  "editor.suggestOnTriggerCharacters": true,
+  // Enter makes newlines; Tab accepts the suggestion
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.wordWrap": "on",
+  "editor.rulers": [88],
+  "editor.renderWhitespace": "trailing",
+
+  // blank lines delimit Tidal blocks, so don't let a formatter eat them
+  "files.trimFinalNewlines": false,
+  "files.insertFinalNewline": true,
+
+  "[haskell]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": false
+  }
+}
