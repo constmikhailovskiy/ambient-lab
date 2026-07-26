@@ -47,7 +47,7 @@ s.waitForBoot {
 	// orbit 2 -> bus 4/5   noise & washes
 	// orbit 3 -> bus 6/7   melodic / glass / arps
 	// orbits 4,5 -> bus 0/1 spare
-	~dirt.start(57120, [0, 2, 4, 6, 0, 0]);
+	~dirt.start(57120, 0 ! 6);
 
 	// nicer default reverb tails for ambient work
 	~dirt.orbits.do { |x| x.set(\dryBus, x.dryBus) };
@@ -85,3 +85,7 @@ s.waitForBoot {
 // s.stopRecording;
 // ~dirt.orbits[1].globalEffects.postln;
 // Cmd+. / Ctrl+.                // panic: kill all sound
+
+// Synth(\ambPad, [\freq, 110, \sustain, 10, \amp, 0,5]);
+
+s.serverRunning;

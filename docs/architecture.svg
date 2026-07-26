@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="320" viewBox="0 0 680 320" role="img" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<title>ambient-lab signal flow and boot order</title>
+<desc>Tidal, containing VS Code and GHCi, sends OSC messages to SuperCollider, containing sclang with SuperDirt and scsynth, which produces audio out. Signal flows left to right, but SuperCollider must be booted first and Tidal second.</desc>
+<style>
+.neutral{stroke:#73726c}
+.neutraltxt{fill:#73726c}
+.ahead{fill:#73726c}
+@media (prefers-color-scheme: dark){
+.neutral{stroke:#9c9a92}
+.neutraltxt{fill:#9c9a92}
+.ahead{fill:#9c9a92}
+}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path class="ahead" d="M0 1 L9 5 L0 9 z" fill="#73726c"/>
+</marker>
+</defs>
+
+<rect x="40" y="60" width="180" height="200" rx="14" fill="none" class="neutral" stroke="#73726c" stroke-width="1" stroke-dasharray="4 4"/>
+<text class="neutraltxt" fill="#73726c" x="130" y="88" text-anchor="middle" font-size="14" font-weight="500">Tidal</text>
+
+<rect x="55" y="100" width="150" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="130" y="123" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">VS Code</text>
+<text x="130" y="142" text-anchor="middle" font-size="12" fill="#534AB7">sends the text</text>
+
+<line x1="130" y1="158" x2="130" y2="173" class="neutral" stroke="#73726c" stroke-width="1.5" marker-end="url(#a)"/>
+
+<rect x="55" y="176" width="150" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="130" y="199" text-anchor="middle" font-size="14" font-weight="500" fill="#3C3489">GHCi</text>
+<text x="130" y="218" text-anchor="middle" font-size="12" fill="#534AB7">runs the pattern</text>
+
+<line x1="224" y1="160" x2="267" y2="160" class="neutral" stroke="#73726c" stroke-width="1.5" marker-end="url(#a)"/>
+
+<rect x="270" y="60" width="230" height="200" rx="14" fill="none" class="neutral" stroke="#73726c" stroke-width="1" stroke-dasharray="4 4"/>
+<text class="neutraltxt" fill="#73726c" x="385" y="88" text-anchor="middle" font-size="14" font-weight="500">SuperCollider</text>
+
+<rect x="290" y="100" width="190" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+<text x="385" y="123" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">sclang + SuperDirt</text>
+<text x="385" y="142" text-anchor="middle" font-size="12" fill="#0F6E56">listens on port 57120</text>
+
+<line x1="385" y1="158" x2="385" y2="173" class="neutral" stroke="#73726c" stroke-width="1.5" marker-end="url(#a)"/>
+
+<rect x="290" y="176" width="190" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
+<text x="385" y="199" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">scsynth</text>
+<text x="385" y="218" text-anchor="middle" font-size="12" fill="#0F6E56">makes the sound</text>
+
+<line x1="504" y1="204" x2="537" y2="204" class="neutral" stroke="#73726c" stroke-width="1.5" marker-end="url(#a)"/>
+
+<rect x="540" y="176" width="100" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+<text x="590" y="199" text-anchor="middle" font-size="14" font-weight="500" fill="#2C2C2A">Audio out</text>
+<text x="590" y="218" text-anchor="middle" font-size="12" fill="#5F5E5A">or Ableton</text>
+
+<rect x="85" y="276" width="90" height="24" rx="12" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
+<text x="130" y="292" text-anchor="middle" font-size="12" fill="#633806">boot 2nd</text>
+
+<rect x="340" y="276" width="90" height="24" rx="12" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
+<text x="385" y="292" text-anchor="middle" font-size="12" fill="#633806">boot 1st</text>
+</svg>
