@@ -1,0 +1,7 @@
+# recorded audio: keep the source, not the gigabytes
+takes/**/*.wav
+takes/**/*.aif
+takes/**/*.aiff
+takes/**/*.flac
+*.asd
+.DS_Store

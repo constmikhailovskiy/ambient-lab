@@ -1,0 +1,57 @@
+-- ============================================================
+-- 02 :: NOISE
+-- The `ambNoise` synth is a bank of narrow bandpass filters. Low `bw`
+-- makes it nearly pitched; high `bw` makes it weather.
+-- ============================================================
+
+ambient
+
+
+-- ---- 1. tuned noise ---------------------------------------
+-- bw 0.05 => you can hear a pitch. It is still noise.
+d1 $ slow 8 $ hold 26 $ wash $ note "c3" # pF "bw" 0.05
+
+
+-- ---- 2. sweep the whole spectrum of "pitched -> weather" ---
+d1 $ slow 8 $ hold 26 $ wash $ note "c3"
+   # pF "bw" (range 0.02 0.9 (slow 43 sine))
+   # pF "motion" (range 0.01 0.2 (slow 31 perlin))
+
+
+-- ---- 3. gestures instead of a bed --------------------------
+-- Short-ish washes appearing at unpredictable moments. `thin` removes
+-- events, `?` in the mini-notation gives each event a 50% chance.
+d2 $ slow 4 $ thin 0.6 $ hold 8 $ cathedral $ wash
+   $ note "c4? g4? <as4 f4>? c5?"
+   # pF "bw" "<0.1 0.4 0.7>"
+   # gain 0.8
+
+
+-- ---- 4. sample-based noise: granulate the Dirt library -----
+-- `striate` chops a sample into n pieces spread across the cycle.
+-- Very long `slow` + `striate` = granular smear.
+d3 $ slow 16 $ striate 64 $ s "birds*4" # orbit 2
+   # speed (range 0.2 0.6 (slow 23 sine))
+   # cathedral # gain 0.9
+
+-- Try any long sample: "sheffield", "hardcore", "gab", "sitar", "wind" (if present).
+-- List what you have with, in SuperCollider:
+--   ~dirt.postSampleInfo;
+
+
+-- ---- 5. feedback delay as an instrument -------------------
+d4 $ slow 6 $ thin 0.7 $ hold 4 $ glass $ note "<c5 g5 as5 f5>"
+   # delay 0.8 # delaytime (1/3) # delayfeedback 0.85 # lock 1
+   # orbit 3 # gain 0.85
+-- `lock 1` locks delaytime to the cycle. Remove it for drifting delays.
+
+
+-- ---- 6. destructive layer ---------------------------------
+-- Use sparingly. One of these under a drone changes the whole character.
+d5 $ slow 12 $ hold 30 $ wash $ note "c1"
+   # pF "bw" 0.9 # pF "motion" 0.01
+   # crush 4 # shape 0.4 # hpf 40
+   # gain 0.7
+
+
+-- hush

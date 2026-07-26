@@ -1,0 +1,61 @@
+-- ============================================================
+-- 01 :: DRONES
+-- Evaluate one block at a time (cursor inside it, Ctrl/Cmd+Enter).
+-- Listen for at least 60 seconds before changing anything. Seriously.
+-- ============================================================
+
+-- Always first:
+ambient
+
+
+-- ---- 1. one note, held ------------------------------------
+-- sustain is in SECONDS. The event fires once per cycle, so `slow 8`
+-- means: retrigger once every 8 cycles (~53s), holding for 20s.
+d1 $ slow 8 $ hold 20 $ pad $ note "c2"
+
+
+-- ---- 2. add motion to the same note -----------------------
+-- Nothing about the pitch changes. Only the timbre moves.
+d1 $ slow 8 $ open 23 $ widen 31 $ hold 20 $ pad $ note "c2"
+-- ^ note the prime numbers: 8, 23, 31 never line up, so it never loops.
+--   This is the single most useful trick in ambient live coding.
+
+
+-- ---- 3. two overlapping voices ----------------------------
+-- sustain (24s) is LONGER than the retrigger interval, so voices overlap
+-- and cross-fade into each other. This is how you get a continuous bed
+-- out of a discrete pattern.
+d1 $ slow 6 $ haze $ open 23 $ widen 31 $ drift 37 $ hold 24
+   $ pad $ note "<c2 c2 as1 f2>"
+
+
+-- ---- 4. thicken it ----------------------------------------
+d1 $ slow 6 $ haze $ under $ open 23 $ widen 31 $ drift 37 $ hold 24
+   $ pad $ note "<c2 c2 as1 f2>"
+
+
+-- ---- 5. FM drone underneath -------------------------------
+-- Put this on d2 alongside d1 and mix by ear.
+d2 $ slow 12 $ hold 40 $ drone $ note "c1"
+   # pF "ratio" "<1.5 2.01 1.5 3.14>"
+   # pF "index" (range 1 6 (slow 29 sine))
+   # gain 0.9
+
+
+-- ---- 6. asymmetric harmony --------------------------------
+-- Two voices moving at different, non-integer-related rates. The chords
+-- that emerge are ones you would not have written.
+d1 $ slow 6  $ haze $ open 23 $ hold 26 $ drift 41 $ pad $ note "<c2 as1 f2>"
+d3 $ slow 11 $ haze $ open 19 $ hold 34 $ drift 29 $ pad $ note "<g2 c3 d3 as2>"
+
+
+-- ---- 7. and now the point of all this ---------------------
+-- Boot sc/beds.scd, start Ndef(\bed), and let the Tidal layers move
+-- *over* a bed that never restarts. That combination is the sound.
+
+
+-- ---- stopping ---------------------------------------------
+-- Don't `hush`. Fade:
+d1 $ (# gain 0) $ slow 6 $ hold 24 $ pad $ note "c2"   -- re-evaluate to duck
+-- hush          -- everything off at once
+-- d1 silence    -- one channel off, tails ring out

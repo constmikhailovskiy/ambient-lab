@@ -1,0 +1,75 @@
+-- ============================================================
+-- 03 :: EVOLVING CHORDS
+--
+-- Tidal chord syntax:  root'name'numberOfNotes'inversion
+--   "c4'maj7"        C major 7
+--   "c4'min9'5"      C minor 9, expanded to 5 notes
+--   "c4'maj'4'ii"    C major, 4 notes, second inversion
+-- Chord names: maj min maj7 min7 dom7 maj9 min9 six m6 sus2 sus4
+--              add9 eleven thirteen dim aug ... (see Sound.Tidal.Chords)
+-- ============================================================
+
+ambient
+
+
+-- ---- 1. a chord, held -------------------------------------
+d1 $ slow 8 $ hold 24 $ haze $ pad $ note "c3'min9'5"
+
+
+-- ---- 2. a progression, glacially --------------------------
+-- Each chord lasts 8 cycles (~53s). One change per minute is normal here.
+d1 $ slow 8 $ hold 26 $ haze $ open 29 $ pad
+   $ note "<c3'min9'5 gs2'maj7'5 as2'maj9'5 f3'min7'5>"
+
+
+-- ---- 3. arpeggiate the same harmony on another voice -------
+-- Same chord source, different articulation. `arp` unrolls a chord into
+-- a sequence. Try: up down updown downup thumbup converge pinkyup
+d1 $ slow 8 $ hold 26 $ haze $ pad
+   $ note "<c3'min9'5 gs2'maj7'5 as2'maj9'5 f3'min7'5>"
+
+d2 $ slow 2 $ arp "<up thumbup converge>" $ hold 6 $ glass
+   $ note "<c4'min9'5 gs3'maj7'5 as3'maj9'5 f4'min7'5>"
+   # gain 0.8 # pF "decay" 6
+
+
+-- ---- 4. let the machine choose the voicing -----------------
+-- `thin` removes notes at random, so each pass through the chord
+-- reveals a different subset of it. Cheap and very effective.
+d2 $ slow 2 $ thin 0.5 $ arp "up" $ hold 8 $ glass
+   $ note "<c4'min11'7 gs3'maj9'7 as3'maj13'7 f4'min9'7>"
+   # pF "decay" (range 2 9 (slow 37 perlin))
+   # gain 0.8
+
+
+-- ---- 5. scale-constrained generative melody ---------------
+-- `irand 8` picks a random degree; `scale` maps it into a mode.
+-- Modes worth your time: aeolian dorian phrygian lydian
+--                       majPent minPent whole ritusen egyptian
+d3 $ slow 3 $ thin 0.5 $ hold 10 $ glass
+   $ note (scale "aeolian" (segment 4 $ irand 12) + "c4")
+   # pF "decay" 7 # cathedral # gain 0.75
+
+
+-- ---- 6. rolled chords (the Kali Malone move) --------------
+-- Notes of one chord entering a fraction apart rather than together.
+d1 $ slow 8 $ rolled $ hold 26 $ haze $ pad
+   $ note "<c3'min9'5 gs2'maj7'5>"
+-- or spread them much further:
+d1 $ slow 8 $ arpg $ hold 26 $ haze $ pad $ note "<c3'min9'5 gs2'maj7'5>"
+
+
+-- ---- 7. send it to the MicroFreak / Ableton ---------------
+-- Requires the MIDI block in sc/startup.scd to be uncommented.
+-- The MicroFreak is paraphonic: feed it 4 slow notes and let its own
+-- filter + Cycling Envelope do the evolving. You supply harmony, it
+-- supplies motion.
+d6 $ slow 8 $ note "<c3'min9'4 gs2'maj7'4 as2'maj9'4 f3'min7'4>"
+   # s "freak" # midichan 0 # sustain 20
+
+-- ...and the same harmony to an instrument inside Live, an octave up:
+d7 $ slow 8 $ note "<c4'min9'5 gs3'maj7'5 as3'maj9'5 f4'min7'5>"
+   # s "live" # midichan 0 # sustain 18
+
+
+-- hush
