@@ -7,6 +7,10 @@ TidalCycles, wired into Ableton Live, with the MicroFreak in the loop.
 
 ## 1. Who does what (the mental model)
 
+<p align="center">
+  <img src="docs/architecture.svg" alt="Signal flows from Tidal to SuperCollider to audio out; SuperCollider boots first, Tidal second" width="680">
+</p>
+
 The single most useful thing to get straight before writing any code:
 
 | Layer | Role | You edit it as |
